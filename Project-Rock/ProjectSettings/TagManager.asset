@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Player1StartingTile
+  - Player2StartingTile
+  - Player1
+  - Player2
+  - Shield
   layers:
   - Default
   - TransparentFX
