@@ -65,12 +65,11 @@ public class InputManager : MonoBehaviour
         CheckP1Shield();
         CheckP2Shield();
 
-        CheckP1Movement();
-        CheckP2Movement();
-
 
         if (!onCooldown)
         {
+            CheckP1Movement();
+            CheckP2Movement();
             CheckP1Attacks();
             CheckP2Attacks();
         }
@@ -86,22 +85,22 @@ public class InputManager : MonoBehaviour
                 if (Input.GetAxisRaw("P1Horizontal") > 0)
                 {
                     onP1Movement.Invoke(1);
-                    //StartCoroutine(ActionCooldown(0.1f));
+                    StartCoroutine(ActionCooldown(0.1f));
                 }
                 else if (Input.GetAxisRaw("P1Horizontal") < 0)
                 {
                     onP1Movement.Invoke(3);
-                    //StartCoroutine(ActionCooldown(0.1f));
+                    StartCoroutine(ActionCooldown(0.1f));
                 }
                 if (Input.GetAxisRaw("P1Vertical") > 0)
                 {
                     onP1Movement.Invoke(0);
-                    //StartCoroutine(ActionCooldown(0.1f));
+                    StartCoroutine(ActionCooldown(0.1f));
                 }
                 else if (Input.GetAxisRaw("P1Vertical") < 0)
                 {
                     onP1Movement.Invoke(2);
-                    //StartCoroutine(ActionCooldown(0.1f));
+                    StartCoroutine(ActionCooldown(0.1f));
                 }
 
                 isMoving = true;
@@ -157,22 +156,22 @@ public class InputManager : MonoBehaviour
                 if (Input.GetAxisRaw("P2Horizontal") > 0)
                 {
                     onP2Movement.Invoke(1);
-                    //StartCoroutine(ActionCooldown(0.1f));
+                    StartCoroutine(ActionCooldown(0.1f));
                 }
                 else if (Input.GetAxisRaw("P2Horizontal") < 0)
                 {
                     onP2Movement.Invoke(3);
-                    //StartCoroutine(ActionCooldown(0.1f));
+                    StartCoroutine(ActionCooldown(0.1f));
                 }
                 if (Input.GetAxisRaw("P2Vertical") > 0)
                 {
                     onP2Movement.Invoke(0);
-                    //StartCoroutine(ActionCooldown(0.1f));
+                    StartCoroutine(ActionCooldown(0.1f));
                 }
                 else if (Input.GetAxisRaw("P2Vertical") < 0)
                 {
                     onP2Movement.Invoke(2);
-                    //StartCoroutine(ActionCooldown(0.1f));
+                    StartCoroutine(ActionCooldown(0.1f));
                 }
 
                 isMoving = true;
