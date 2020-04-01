@@ -15,8 +15,8 @@ public class BasicShotController : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        iManager = GameObject.Find("GameManager").GetComponent<InputManager>();
         animator = GetComponent<Animator>();
+        iManager = GetComponent<InputManager>();
         basicShotPrefab = Resources.Load("Abilities/MCBasicShot") as GameObject;
 
         if (isPlayer1)

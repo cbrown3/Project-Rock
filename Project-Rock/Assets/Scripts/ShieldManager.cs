@@ -7,21 +7,32 @@ public class ShieldManager : MonoBehaviour
 {
     public bool isPlayer1;
     private InputManager iManager;
+    private GridMovementController movementController;
 
     public Slider shieldHealthSlider;
     public float shieldMaxHealth;
     private float currentShieldHealth;
 
-    public CircleCollider2D playerHurtBox;
+    public BoxCollider2D playerHurtBox;
     private CircleCollider2D collider;
     private SpriteRenderer sprite;
 
+    public ParticleSystem parryParticles;
+    public ParticleSystem shieldStunParticles;
+
+    private Color defaultShieldColor;
+
     private int parryTimer;
     private bool localIsShielding;
+    private bool shieldBroken;
+    private bool inShieldStun;
+
     // Start is called before the first frame update
     void Start()
     {
-        iManager = GameObject.Find("GameManager").GetComponent<InputManager>();
+        iManager = GetComponentInParent<InputManager>();
+
+        movementController = GetComponentInParent<GridMovementController>();
 
         if (isPlayer1)
         {
@@ -37,6 +48,7 @@ public class ShieldManager : MonoBehaviour
 
         sprite = GetComponent<SpriteRenderer>();
         collider = GetComponent<CircleCollider2D>();
+        defaultShieldColor = sprite.color;
         sprite.enabled = false;
         collider.enabled = false;
 
@@ -49,58 +61,100 @@ public class ShieldManager : MonoBehaviour
     {
         shieldHealthSlider.value = currentShieldHealth;
 
-        if(currentShieldHealth < shieldMaxHealth)
-        {
-            currentShieldHealth += 0.1f;
-        }
-
         if(localIsShielding && parryTimer < 12)
         {
+            sprite.color = new Color(255,255,255,0.5f);
             parryTimer++;
+        }
+        else
+        {
+            sprite.color = defaultShieldColor;
+        }
+
+        if(localIsShielding)
+        {
+            currentShieldHealth -= 0.1f;
         }
     }
 
     public void Shield(bool isShielding)
     {
-        if(isShielding && currentShieldHealth > 0)
-        {
-            sprite.enabled = true;
-            collider.enabled = true;
-            playerHurtBox.enabled = false;
+        localIsShielding = isShielding;
 
-            localIsShielding = true;
-        }
-        else
+        if (!inShieldStun)
         {
-            sprite.enabled = false;
-            collider.enabled = false;
-            playerHurtBox.enabled = true;
-            localIsShielding = false;
-            parryTimer = 0;
+            if (isShielding && currentShieldHealth > 0 && !shieldBroken)
+            {
+                sprite.enabled = true;
+                collider.enabled = true;
+                playerHurtBox.enabled = false;
+
+                movementController.ShieldStop(true);
+            }
+            else
+            {
+                sprite.enabled = false;
+                collider.enabled = false;
+                playerHurtBox.enabled = true;
+                parryTimer = 0;
+
+                movementController.ShieldStop(false);
+            }
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-
-    }
-    
     public void TakeDamage(int damage)
     {
         if(parryTimer < 10)
         {
+            parryParticles.Play();
             print("parry!");
         }
         else
         {
-            currentShieldHealth -= damage / 2;
-            GetComponentInParent<HealthManager>().TakeDamage(damage / 2);
+            currentShieldHealth -= damage;
         }
 
         if(currentShieldHealth <= 0)
         {
             print("shield broken!");
-            StartCoroutine(GetComponentInParent<GridMovementController>().Immobilize(3f));
+            shieldBroken = true;
         }
+    }
+
+    public void ActivateShieldStun(float lag)
+    {
+        if(parryTimer >= 10)
+        {
+            StartCoroutine(ShieldStun(lag));
+        }
+    }
+
+    public IEnumerator ShieldStun(float lag)
+    {
+        shieldStunParticles.Play(true);
+        inShieldStun = true;
+        
+        while (lag > 0f)
+        {
+            lag -= Time.deltaTime;
+            yield return null;
+        }
+
+        inShieldStun = false;
+
+        if(localIsShielding)
+        {
+            Shield(true);
+        }
+        else
+        {
+            Shield(false);
+        }
+    }
+
+    public void ResetShield()
+    {
+        currentShieldHealth = shieldMaxHealth;
     }
 }

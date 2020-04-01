@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class HealthManager : MonoBehaviour
 {
+    public bool isPlayer1;
     public Slider healthSlider;
     public float maxHealth = 400;
     [SerializeField]
@@ -39,7 +40,19 @@ public class HealthManager : MonoBehaviour
 
         if(currentHealth <= 0)
         {
-            //lose
+            if(isPlayer1)
+            {
+                GameManager.Instance.RoundWon(2);
+            }
+            else
+            {
+                GameManager.Instance.RoundWon(1);
+            }
         }
+    }
+
+    public void ResetHealth()
+    {
+        currentHealth = maxHealth;
     }
 }

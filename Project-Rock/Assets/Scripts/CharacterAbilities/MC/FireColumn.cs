@@ -9,18 +9,38 @@ public class FireColumn : MonoBehaviour
 
     public int Damage { get; set; }
 
+    public float hitStun = 0.05f;
+
+    public float shieldStun = 0.025f;
+
     private bool onDamageCooldown = false;
+
+    private float lifetime = 5f;
 
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(Lifetime(5.0f));
+        if(IsPlayer1)
+        {
+            tag = "P1FireColumn";
+        }
+        else
+        {
+            tag = "P2FireColumn";
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         Damage = 10;
+
+        lifetime -= Time.deltaTime;
+
+        if(lifetime <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -31,7 +51,13 @@ public class FireColumn : MonoBehaviour
                 if (!onDamageCooldown && collision.tag == "Player2")
                 {
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
+                    collision.GetComponent<P2InputManager>().ActivateHitStun(hitStun);
                     StartCoroutine(DamageCooldown(0.2f));
+                }
+
+                if(collision.tag == "P2RockPillar")
+                {
+                    Destroy(gameObject);
                 }
                 break;
 
@@ -39,14 +65,25 @@ public class FireColumn : MonoBehaviour
                 if (!onDamageCooldown && collision.tag == "Player1")
                 {
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
-                    StartCoroutine(DamageCooldown(0.2f));
+                    collision.GetComponent<P1InputManager>().ActivateHitStun(hitStun);
+                    StartCoroutine(DamageCooldown(0.75f));
+                }
+
+                if (collision.tag == "P1RockPillar")
+                {
+                    Destroy(gameObject);
                 }
                 break;
         }
 
-        if (collision.tag == "Shield")
+        if (collision.tag.Contains("Shield"))
         {
-            collision.GetComponent<ShieldManager>().TakeDamage(Damage);
+            if(!onDamageCooldown)
+            {
+                collision.GetComponent<ShieldManager>().ActivateShieldStun(shieldStun);
+                collision.GetComponent<ShieldManager>().TakeDamage(Damage);
+                StartCoroutine(DamageCooldown(0.75f));
+            }
         }
     }
 
@@ -61,16 +98,5 @@ public class FireColumn : MonoBehaviour
         }
 
         onDamageCooldown = false;
-    }
-
-    private IEnumerator Lifetime(float cooldown)
-    {
-        while (cooldown > 0f)
-        {
-            cooldown -= Time.deltaTime;
-            yield return null;
-        }
-
-        Destroy(gameObject);
     }
 }

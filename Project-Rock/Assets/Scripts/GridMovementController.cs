@@ -6,35 +6,28 @@ public class GridMovementController : MonoBehaviour
 {
     private InputManager iManager;
 
-    public bool isPlayer1;
-    public int[] GridPosition { get; set; }
+    public Tile currentTile;
 
-    private Transform startingPlatform;
+    private Vector3 movementVector;
+
+    public bool isPlayer1;
 
     private bool isMobile;
+
+    private bool isShielding;
 
     // Start is called before the first frame update
     void Start()
     {
-        iManager = GameObject.Find("GameManager").GetComponent<InputManager>();
+        iManager = GetComponent<InputManager>();
 
         if (isPlayer1)
         {
             iManager.onP1Movement.AddListener(MoveOneTile);
 
-            startingPlatform = GameObject.FindGameObjectWithTag("Player1StartingTile").transform;
-
-            //set player to correct position
-            transform.position = new Vector3(startingPlatform.position.x,
-                startingPlatform.position.y + 0.25f, 0);
-
-
-            //Position of player on the grid, ZERO_INDEXED
-            GridPosition = new int[2];
-            //X, or row position
-            GridPosition[0] = 1;
-            //Y, or column position
-            GridPosition[1] = 1;
+            //Tile of player on the grid
+            currentTile = GridManager.Instance.GetTile(2, 3);
+            transform.position = currentTile.transform.position + new Vector3(0, 0.5f, 0);
         }
         else
         {
@@ -42,28 +35,40 @@ public class GridMovementController : MonoBehaviour
 
             iManager.onP2Movement.AddListener(MoveOneTile);
 
-            startingPlatform = GameObject.FindGameObjectWithTag("Player2StartingTile").transform;
-
-            //set player to correct position
-            transform.position = new Vector3(startingPlatform.position.x,
-                startingPlatform.position.y + 0.25f, 0);
-
-
-            //Position of player on the grid, ZERO_INDEXED
-            GridPosition = new int[2];
-            //X, or row position
-            GridPosition[0] = 6;
-            //Y, or column position
-            GridPosition[1] = 2;
+            //Tile of player on the grid
+            currentTile = GridManager.Instance.GetTile(7, 2);
+            transform.position = currentTile.transform.position + new Vector3(0, 0.5f, 0);
         }
 
         isMobile = true;
+        isShielding = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    public IEnumerator Freeze(float cooldown)
+    {
+        GetComponent<Animator>().Play("FrozenAnim");
+
+        isMobile = false;
+
+        while (cooldown > 0f)
+        {
+            cooldown -= Time.deltaTime;
+            yield return null;
+        }
+
+        isMobile = true;
+        GetComponent<Animator>().Rebind();
+    }
+    
+    public void ShieldStop(bool shielding)
+    {
+        isShielding = shielding;
     }
 
     public IEnumerator Immobilize(float cooldown)
@@ -81,82 +86,102 @@ public class GridMovementController : MonoBehaviour
 
     public void MoveOneTile(int direction)
     {
-        if(isMobile)
+        if(isMobile && !isShielding)
         {
+            int futureTileIndex = currentTile.GetTileIndex();
             //moving up
             if (direction == 0)
             {
-                if (GridPosition[1] > 2)
+                futureTileIndex -= 8;
+                
+                if (futureTileIndex < 0)
                 {
                     return;
                 }
 
-                transform.Translate(0, 0.96f, 0);
-                GridPosition[1]++;
+                if (currentTile.HasTileUp() && GridManager.Instance.GetTile(futureTileIndex).GetIsTraversable())
+                {
+                    currentTile = GridManager.Instance.GetTile(futureTileIndex);
+                    transform.position = currentTile.transform.position + new Vector3(0, 0.5f, 0);
+                }
             }
             //moving right
             else if (direction == 1)
             {
-                switch (isPlayer1)
+                futureTileIndex++;
+
+                if (futureTileIndex > 31)
                 {
-                    case true:
-                        if (GridPosition[0] > 2)
+                    return;
+                }
+
+                if (currentTile.HasTileRight())
+                {
+                    if (GridManager.Instance.GetTile(futureTileIndex).GetIsTraversable())
+                    {
+                        if(isPlayer1)
                         {
-                            return;
+                            if(GridManager.Instance.GetTile(futureTileIndex).GetIsPlayer1())
+                            {
+                                currentTile = GridManager.Instance.GetTile(futureTileIndex);
+                                transform.position = currentTile.transform.position + new Vector3(0, 0.5f, 0);
+                            }
                         }
-
-                        transform.Translate(1.25f, 0, 0);
-                        GridPosition[0]++;
-                        break;
-
-                    case false:
-                        if (GridPosition[0] > 6)
+                        else
                         {
-                            return;
+                            currentTile = GridManager.Instance.GetTile(futureTileIndex);
+                            transform.position = currentTile.transform.position + new Vector3(0, 0.5f, 0);
                         }
-
-                        transform.Translate(1.25f, 0, 0);
-                        GridPosition[0]++;
-                        break;
+                    }
                 }
             }
             //moving down
             else if (direction == 2)
             {
+                futureTileIndex += 8;
 
-                if (GridPosition[1] < 1)
+                if (futureTileIndex > 31)
                 {
                     return;
                 }
 
-                transform.Translate(0, -0.96f, 0);
-                GridPosition[1]--;
+                if (currentTile.HasTileDown())
+                {
+                    if (GridManager.Instance.GetTile(futureTileIndex).GetIsTraversable())
+                    {
+                        currentTile = GridManager.Instance.GetTile(futureTileIndex);
+                        transform.position = currentTile.transform.position + new Vector3(0, 0.5f, 0);
+                    }
+                }
             }
             //moving left
             else if (direction == 3)
             {
+                futureTileIndex--;
 
-                switch (isPlayer1)
+                if(futureTileIndex < 0)
                 {
-                    case true:
-                        if (GridPosition[0] < 1)
+                    return;
+                }
+
+                if (currentTile.HasTileLeft())
+                {
+                    if(GridManager.Instance.GetTile(futureTileIndex).GetIsTraversable())
+                    {
+                        if (isPlayer1)
                         {
-                            return;
+                            currentTile = GridManager.Instance.GetTile(futureTileIndex);
+                            transform.position = currentTile.transform.position + new Vector3(0, 0.5f, 0);
                         }
-
-                        transform.Translate(-1.25f, 0, 0);
-                        GridPosition[0]--;
-                        break;
-
-                    case false:
-                        if (GridPosition[0] < 5)
+                        else
                         {
-                            return;
+                            if (!GridManager.Instance.GetTile(futureTileIndex).GetIsPlayer1())
+                            {
+                                currentTile = GridManager.Instance.GetTile(futureTileIndex);
+                                transform.position = currentTile.transform.position + new Vector3(0, 0.5f, 0);
+                            }
                         }
-
-                        transform.Translate(-1.25f, 0, 0);
-                        GridPosition[0]--;
-                        break;
+                    }
                 }
             }
         }

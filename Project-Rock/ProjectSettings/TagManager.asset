@@ -4,11 +4,20 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Player1StartingTile
-  - Player2StartingTile
   - Player1
   - Player2
-  - Shield
+  - P1BasicShot
+  - P2BasicShot
+  - P1Icicle
+  - P2Icicle
+  - P1RockPillar
+  - P2RockPillar
+  - P1Shield
+  - P2Shield
+  - P1FireColumn
+  - P2FireColumn
+  - P1IcicleShard
+  - P2IcicleShard
   layers:
   - Default
   - TransparentFX

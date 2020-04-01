@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class AbilityController : MonoBehaviour
 {
-    public bool isPlayer1;
+    protected GridMovementController movementController;
     protected InputManager iManager;
     protected Animator animator;
+    public bool isPlayer1;
+
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        iManager = GameObject.Find("GameManager").GetComponent<InputManager>();
+        iManager = GetComponent<InputManager>();
         animator = GetComponent<Animator>();
+        movementController = GetComponent<GridMovementController>();
     }
 }

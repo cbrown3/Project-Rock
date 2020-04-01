@@ -8,7 +8,11 @@ public class BasicShot : MonoBehaviour
 
     public int Damage { get; set; }
 
+    public float hitStun = 0.2f;
+
     private Rigidbody2D rigid;
+
+    private float lifetime = 5f;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,11 +21,13 @@ public class BasicShot : MonoBehaviour
         switch (IsPlayer1)
         {
             case true:
-                rigid.AddForce(new Vector2(100.0f, 0), ForceMode2D.Impulse);
+                tag = "P1BasicShot";
+                rigid.AddForce(new Vector2(25f, 0), ForceMode2D.Impulse);
                 break;
 
             case false:
-                rigid.AddForce(new Vector2(-100.0f, 0), ForceMode2D.Impulse);
+                tag = "P2BasicShot";
+                rigid.AddForce(new Vector2(-25f, 0), ForceMode2D.Impulse);
                 break;
         }
     }
@@ -29,9 +35,15 @@ public class BasicShot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Damage = 10;
         if(transform.position.x > 10 ||
             transform.position.x < -10)
+        {
+            Destroy(gameObject);
+        }
+
+        lifetime -= Time.deltaTime;
+
+        if (lifetime <= 0)
         {
             Destroy(gameObject);
         }
@@ -45,6 +57,20 @@ public class BasicShot : MonoBehaviour
                 if (collision.tag == "Player2")
                 {
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
+                    Destroy(GetComponent<Rigidbody2D>());
+                    Destroy(GetComponent<SpriteRenderer>());
+                    collision.GetComponent<P2InputManager>().ActivateHitStun(hitStun);
+                }
+
+                if (collision.tag == "P2RockPillar")
+                {
+                    Destroy(gameObject);
+                }
+
+                if (collision.tag == "P2Shield")
+                {
+                    collision.GetComponent<ShieldManager>().ActivateShieldStun(1f);
+                    collision.GetComponent<ShieldManager>().TakeDamage(Damage);
                     Destroy(gameObject);
                 }
                 break;
@@ -53,15 +79,23 @@ public class BasicShot : MonoBehaviour
                 if (collision.tag == "Player1")
                 {
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
+                    Destroy(GetComponent<Rigidbody2D>());
+                    Destroy(GetComponent<SpriteRenderer>());
+                    collision.GetComponent<P1InputManager>().ActivateHitStun(hitStun);
+                }
+
+                if (collision.tag == "P1RockPillar")
+                {
+                    Destroy(gameObject);
+                }
+
+                if (collision.tag == "P1Shield")
+                {
+                    collision.GetComponent<ShieldManager>().ActivateShieldStun(1f);
+                    collision.GetComponent<ShieldManager>().TakeDamage(Damage);
                     Destroy(gameObject);
                 }
                 break;
-        }
-
-        if(collision.tag == "Shield")
-        {
-            collision.GetComponent<ShieldManager>().TakeDamage(Damage);
-            Destroy(gameObject);
         }
     }
 }
