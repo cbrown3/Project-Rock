@@ -59,7 +59,7 @@ public class BasicShot : MonoBehaviour
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
                     Destroy(GetComponent<Rigidbody2D>());
                     Destroy(GetComponent<SpriteRenderer>());
-                    collision.GetComponent<P2InputManager>().ActivateHitStun(hitStun);
+                    collision.GetComponent<GridMovementController>().ActivateHitStun(hitStun);
                 }
 
                 if (collision.tag == "P2RockPillar")
@@ -81,7 +81,7 @@ public class BasicShot : MonoBehaviour
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
                     Destroy(GetComponent<Rigidbody2D>());
                     Destroy(GetComponent<SpriteRenderer>());
-                    collision.GetComponent<P1InputManager>().ActivateHitStun(hitStun);
+                    collision.GetComponent<GridMovementController>().ActivateHitStun(hitStun);
                 }
 
                 if (collision.tag == "P1RockPillar")

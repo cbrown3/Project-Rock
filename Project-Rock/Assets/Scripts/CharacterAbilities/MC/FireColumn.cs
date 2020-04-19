@@ -51,7 +51,7 @@ public class FireColumn : MonoBehaviour
                 if (!onDamageCooldown && collision.tag == "Player2")
                 {
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
-                    collision.GetComponent<P2InputManager>().ActivateHitStun(hitStun);
+                    collision.GetComponent<GridMovementController>().ActivateHitStun(hitStun);
                     StartCoroutine(DamageCooldown(0.2f));
                 }
 
@@ -65,7 +65,7 @@ public class FireColumn : MonoBehaviour
                 if (!onDamageCooldown && collision.tag == "Player1")
                 {
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
-                    collision.GetComponent<P1InputManager>().ActivateHitStun(hitStun);
+                    collision.GetComponent<GridMovementController>().ActivateHitStun(hitStun);
                     StartCoroutine(DamageCooldown(0.75f));
                 }
 

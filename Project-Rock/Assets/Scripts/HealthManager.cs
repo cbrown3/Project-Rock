@@ -29,24 +29,27 @@ public class HealthManager : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (currentHealth <= largeHealthPoolMarker)
+        if(GameManager.Instance.currentGameState == GameManager.GameState.Playing)
         {
-            currentHealth -= damage / 4;
-        }
-        else
-        {
-            currentHealth -= damage;
-        }
-
-        if(currentHealth <= 0)
-        {
-            if(isPlayer1)
+            if (currentHealth <= largeHealthPoolMarker)
             {
-                GameManager.Instance.RoundWon(2);
+                currentHealth -= damage / 4;
             }
             else
             {
-                GameManager.Instance.RoundWon(1);
+                currentHealth -= damage;
+            }
+
+            if (currentHealth <= 0)
+            {
+                if (isPlayer1)
+                {
+                    GameManager.Instance.RoundWon(2);
+                }
+                else
+                {
+                    GameManager.Instance.RoundWon(1);
+                }
             }
         }
     }

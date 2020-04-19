@@ -1,41 +1,64 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class P2InputManager : InputManager
 {
 
     public float P2MovementDelay { get; set; }
-    public bool inHitStun = false;
 
-    private Coroutine currentHitStunCoroutine = null;
-    public ParticleSystem hitStunParticles;
-    private ParticleSystem.MainModule main;
+    private GridMovementController gmController;
 
     private bool onCooldown = false;
     private bool isMoving = false;
+
+
+    private void Awake()
+    {
+        SceneManager.sceneLoaded += LoadGridController;
+    }
+
+    private void LoadGridController(Scene arg0, LoadSceneMode arg1)
+    {
+        if (arg0.name == "GameScene")
+        {
+            Scene gameScene = SceneManager.GetSceneByName("GameScene");
+
+            GameObject[] gameObjects = gameScene.GetRootGameObjects();
+
+            for (int i = 0; i < gameObjects.Length; i++)
+            {
+                if (gameObjects[i].name == "Player2")
+                {
+                    gmController = gameObjects[i].GetComponent<GridMovementController>();
+                }
+            }
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         P2MovementDelay = 0.1f;
-        main = hitStunParticles.main;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!inHitStun)
+        if (SceneManager.GetSceneByName("GameScene").isLoaded)
         {
-            CheckP2Shield();
-
-            if (!onCooldown)
+            if (!gmController.inHitStun)
             {
-                CheckP2Movement();
-                if (GameManager.Instance.currentGameState == GameManager.GameState.Playing ||
-                    GameManager.Instance.currentGameState == GameManager.GameState.RoundEnd)
+                CheckP2Shield();
+
+                if (!onCooldown)
                 {
-                    CheckP2Attacks();
+                    CheckP2Movement();
+                    if (GameManager.Instance.currentGameState == GameManager.GameState.Playing ||
+                        GameManager.Instance.currentGameState == GameManager.GameState.RoundEnd)
+                    {
+                        CheckP2Attacks();
+                    }
                 }
             }
         }
@@ -135,37 +158,5 @@ public class P2InputManager : InputManager
         }
 
         onCooldown = false;
-    }
-
-    public void ActivateHitStun(float cooldown)
-    {
-        if (currentHitStunCoroutine != null)
-        {
-            GameManager.Instance.comboCounter[0]++;
-            StopCoroutine(currentHitStunCoroutine);
-        }
-        currentHitStunCoroutine = StartCoroutine(HitStun(cooldown));
-    }
-
-
-    private IEnumerator HitStun(float cooldown)
-    {
-        GetComponent<Animator>().Play("HitStunAnim");
-        main.simulationSpeed = 1/cooldown;
-        hitStunParticles.Play(true);
-
-        inHitStun = true;
-
-        while (cooldown > 0f)
-        {
-            cooldown -= Time.deltaTime;
-            yield return null;
-        }
-
-        GameManager.Instance.comboCounter[0] = 0;
-
-        inHitStun = false;
-        GetComponent<Animator>().Rebind();
-        hitStunParticles.Stop(true);
     }
 }

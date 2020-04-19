@@ -14,7 +14,6 @@ public class GridManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
     }
     // Start is called before the first frame update

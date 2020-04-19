@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GridMovementController : MonoBehaviour
 {
@@ -8,9 +9,15 @@ public class GridMovementController : MonoBehaviour
 
     public Tile currentTile;
 
+    private Coroutine currentHitStunCoroutine = null;
+    public ParticleSystem hitStunParticles;
+    private ParticleSystem.MainModule main;
+
     private Vector3 movementVector;
 
     public bool isPlayer1;
+
+    public bool inHitStun = false;
 
     private bool isMobile;
 
@@ -19,10 +26,20 @@ public class GridMovementController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        iManager = GetComponent<InputManager>();
+        Scene preloadScene = SceneManager.GetSceneByName("PreloadingScene");
+
+        GameObject[] preloadGOs = preloadScene.GetRootGameObjects();
 
         if (isPlayer1)
         {
+            for (int i = 0; i < preloadGOs.Length; i++)
+            {
+                if (preloadGOs[i].name == "P1InputManager")
+                {
+                    iManager = preloadGOs[i].GetComponent<P1InputManager>();
+                }
+            }
+
             iManager.onP1Movement.AddListener(MoveOneTile);
 
             //Tile of player on the grid
@@ -31,6 +48,13 @@ public class GridMovementController : MonoBehaviour
         }
         else
         {
+            for (int i = 0; i < preloadGOs.Length; i++)
+            {
+                if (preloadGOs[i].name == "P2InputManager")
+                {
+                    iManager = preloadGOs[i].GetComponent<P2InputManager>();
+                }
+            }
             GetComponent<SpriteRenderer>().flipX = true;
 
             iManager.onP2Movement.AddListener(MoveOneTile);
@@ -40,6 +64,7 @@ public class GridMovementController : MonoBehaviour
             transform.position = currentTile.transform.position + new Vector3(0, 0.5f, 0);
         }
 
+        main = hitStunParticles.main;
         isMobile = true;
         isShielding = false;
     }
@@ -82,6 +107,37 @@ public class GridMovementController : MonoBehaviour
         }
 
         isMobile = true;
+    }
+    
+    public void ActivateHitStun(float cooldown)
+    {
+        if (currentHitStunCoroutine != null)
+        {
+            GameManager.Instance.comboCounter[1]++;
+            StopCoroutine(currentHitStunCoroutine);
+        }
+        currentHitStunCoroutine = StartCoroutine(HitStun(cooldown));
+    }
+
+    public IEnumerator HitStun(float cooldown)
+    {
+        GetComponent<Animator>().Play("HitStunAnim");
+        main.simulationSpeed = 1 / cooldown;
+        hitStunParticles.Play(true);
+
+        inHitStun = true;
+
+        while (cooldown > 0f)
+        {
+            cooldown -= Time.deltaTime;
+            yield return null;
+        }
+
+        GameManager.Instance.comboCounter[1] = 0;
+
+        inHitStun = false;
+        GetComponent<Animator>().Rebind();
+        hitStunParticles.Stop(true);
     }
 
     public void MoveOneTile(int direction)

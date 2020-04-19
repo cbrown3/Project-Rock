@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -7,23 +6,36 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Game UI")]
-    public TextMeshProUGUI timerText;
-    private float timer = 99;
-    public Toggle[] roundToggle;
-    public GameObject gameOverPanel;
-    public TextMeshProUGUI[] comboCounterText;
+    private TextMeshProUGUI[] playersUsername;
+    private TextMeshProUGUI[] playersCharName;
 
-    [Header("Player Info")]
-    public HealthManager[] healthManagers;
-    public ShieldManager[] shieldManagers;
-    public Tile[] startingTiles;
+    private TextMeshProUGUI roundInfoText;
+
+    [SerializeField]
+    private TextMeshProUGUI timerText;
+    private float timer = 99;
+    [SerializeField]
+    private Toggle[] roundToggle;
+    [SerializeField]
+    private GameObject gameOverPanel;
+    [SerializeField]
+    private TextMeshProUGUI[] comboCounterText;
+
+    [SerializeField]
+    private HealthManager[] healthManagers;
+    [SerializeField]
+    private ShieldManager[] shieldManagers;
+
     //[System.NonSerialized]
     public int[] comboCounter;
+    
+    public int[] charSelected = { -1, -1 };
+    public bool[] playersReady = {false,false};
 
     public enum GameState
     {
         Default,
+        MainMenu,
         RoundStart,
         Playing,
         RoundEnd,
@@ -31,6 +43,15 @@ public class GameManager : MonoBehaviour
     }
 
     public GameState currentGameState;
+
+    public enum GameMode
+    {
+        None = 0,
+        VS = 1,
+        Practice = 2
+    }
+    
+    public GameMode currentGameMode = GameMode.None;
 
     public static GameManager Instance;
 
@@ -40,38 +61,216 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
 
-        SceneManager.sceneLoaded += StartGame;
-    }
+        playersCharName = new TextMeshProUGUI[2];
+        playersUsername = new TextMeshProUGUI[2];
 
-    private void Start()
-    {
+        //roundStartText = new TextMeshProUGUI();
+
+        roundToggle = new Toggle[4];
+        comboCounterText = new TextMeshProUGUI[2];
+
+        healthManagers = new HealthManager[2];
+        shieldManagers = new ShieldManager[2];
+
         comboCounter = new int[2] { 0, 0 };
+
+        currentGameState = GameState.Default;
+
+        SceneManager.sceneLoaded += StartGameEvent;
+    }
+    
+    public GameMode GetGameMode()
+    {
+        return currentGameMode;
     }
 
-    private void StartGame(Scene arg0, LoadSceneMode arg1)
+    public void SetGameMode(int mode)
+    {
+        switch(mode)
+        {
+            case 0:
+                currentGameMode = GameMode.None;
+                break;
+            case 1:
+                currentGameMode = GameMode.VS;
+                break;
+            case 2:
+                currentGameMode = GameMode.Practice;
+                break;
+            default:
+                currentGameMode = GameMode.None;
+                break;
+        }
+    }
+
+    public IEnumerator LoadObjects()
+    {
+        int objectsLoaded = 0;
+
+        Scene gameScene = SceneManager.GetSceneByName("GameScene");
+
+        GameObject[] gameObjects = gameScene.GetRootGameObjects();
+
+        while(objectsLoaded < 19)
+        {
+            //objectsLoaded = 0;
+
+            foreach (GameObject go in gameObjects)
+            {
+                if (go.name == "Canvas")
+                {
+                    Transform[] canvasGOs = go.GetComponentsInChildren<Transform>();
+                    foreach (Transform transform in canvasGOs)
+                    {
+                        if (transform.name == "MatchTimer")
+                        {
+                            timerText = transform.GetComponent<TextMeshProUGUI>();
+                            objectsLoaded++;
+                            continue;
+                        }
+
+                        if (transform.name == "P1CharName")
+                        {
+                            playersCharName[0] = transform.GetComponent<TextMeshProUGUI>();
+                            objectsLoaded++;
+                            continue;
+                        }
+
+                        if (transform.name == "P2CharName")
+                        {
+                            playersCharName[1] = transform.GetComponent<TextMeshProUGUI>();
+                            objectsLoaded++;
+                            continue;
+                        }
+
+                        if (transform.name == "P1Username")
+                        {
+                            playersUsername[0] = transform.GetComponent<TextMeshProUGUI>();
+                            objectsLoaded++;
+                            continue;
+                        }
+
+                        if (transform.name == "P2Username")
+                        {
+                            playersUsername[1] = transform.GetComponent<TextMeshProUGUI>();
+                            objectsLoaded++;
+                            continue;
+                        }
+
+                        if (transform.name == "RoundStartText")
+                        {
+                            roundInfoText = transform.GetComponent<TextMeshProUGUI>();
+                            objectsLoaded++;
+                            continue;
+                        }
+
+                        if (transform.name == "P1WinCounter")
+                        {
+                            roundToggle[0] = transform.GetComponentsInChildren<Toggle>()[0];
+                            objectsLoaded++;
+                            roundToggle[1] = transform.GetComponentsInChildren<Toggle>()[1];
+                            objectsLoaded++;
+                            continue;
+                        }
+
+                        if (transform.name == "P2WinCounter")
+                        {
+                            roundToggle[2] = transform.GetComponentsInChildren<Toggle>()[0];
+                            objectsLoaded++;
+                            roundToggle[3] = transform.GetComponentsInChildren<Toggle>()[1];
+                            objectsLoaded++;
+                            continue;
+                        }
+
+                        if (transform.name == "GameOverPanel")
+                        {
+                            gameOverPanel = transform.gameObject;
+                            objectsLoaded++;
+                            gameOverPanel.SetActive(false);
+                            continue;
+                        }
+
+                        if (transform.name == "P2ComboCounter")
+                        {
+                            comboCounterText[0] = transform.GetComponent<TextMeshProUGUI>();
+                            objectsLoaded++;
+                            continue;
+                        }
+
+                        if (transform.name == "P1ComboCounter")
+                        {
+                            comboCounterText[1] = transform.GetComponent<TextMeshProUGUI>();
+                            objectsLoaded++;
+                            continue;
+                        }
+                    }
+                }
+
+                if (go.name == "Player1")
+                {
+                    healthManagers[0] = go.GetComponent<HealthManager>();
+                    objectsLoaded++;
+                    shieldManagers[0] = go.GetComponentInChildren<ShieldManager>();
+                    objectsLoaded++;
+                    continue;
+                }
+
+                if (go.name == "Player2")
+                {
+                    healthManagers[1] = go.GetComponent<HealthManager>();
+                    objectsLoaded++;
+                    shieldManagers[1] = go.GetComponentInChildren<ShieldManager>();
+                    objectsLoaded++;
+                    continue;
+                }
+            }
+            yield return null;
+        }
+
+        if (currentGameMode == GameMode.VS)
+        {
+            playersUsername[0].text = "";
+            playersUsername[1].text = "";
+        }
+
+        playersCharName[0].text = "Char " + charSelected[0].ToString();
+        playersCharName[1].text = "Char " + charSelected[1].ToString();
+
+        StartCoroutine(StartRound());
+    }
+
+    private void StartGameEvent(Scene arg0, LoadSceneMode arg1)
     {
         if(arg0.name == "GameScene")
         {
-            StartCoroutine(StartRound());
+            StartGame();
         }
+    }
+
+    private void StartGame()
+    {
+        StartCoroutine(LoadObjects());
     }
 
     IEnumerator StartRound()
     {
         currentGameState = GameState.RoundStart;
         float countDown = 3;
-        print("Ready...");
+        roundInfoText.GetComponent<Animator>().Play("FadeOut");
+        roundInfoText.text = "Ready...";
         
         while(countDown > 0)
         {
-            countDown -= Time.deltaTime;
+            if(currentGameState == GameState.RoundStart)
+            {
+                countDown -= Time.deltaTime;
+            }
             yield return null;
         }
 
-        print("Fire!");
+        roundInfoText.text = "Shoot!";
         currentGameState = GameState.Playing;
     }
 
@@ -82,11 +281,11 @@ public class GameManager : MonoBehaviour
         {
             Timer();
             ComboCounter();
-        }
 
-        if(Input.GetKeyDown(KeyCode.L))
-        {
-            GameWon(2);
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                StartCoroutine(GameWon(2));
+            }
         }
     }
 
@@ -129,58 +328,87 @@ public class GameManager : MonoBehaviour
 
     public void RoundWon(int player)
     {
-        if(player == 1)
+        if (player == 1)
         {
-            if(!roundToggle[0].isOn)
+            if (!roundToggle[0].isOn)
             {
                 roundToggle[0].isOn = true;
                 currentGameState = GameState.RoundEnd;
-                ResetRound();
-                StartCoroutine(StartRound());
+                roundInfoText.text = "Cease Fire!";
+                StartCoroutine(ResetRound());
             }
             else
             {
                 roundToggle[1].isOn = true;
-                GameWon(1);
+                StartCoroutine(GameWon(1));
             }
         }
-        else if(player == 2)
+        else if (player == 2)
         {
             if (!roundToggle[2].isOn)
             {
                 roundToggle[2].isOn = true;
-                currentGameState = GameState.RoundEnd;
-                ResetRound();
-                StartCoroutine(StartRound());
+                StartCoroutine(ResetRound());
             }
             else
             {
                 roundToggle[3].isOn = true;
-                GameWon(2);
+                StartCoroutine(GameWon(2));
             }
         }
     }
 
-    private void ResetRound()
+    IEnumerator ResetRound()
     {
-        for(int i = 0; i < 2; i++)
+        float countDown = 5;
+        currentGameState = GameState.RoundEnd;
+        roundInfoText.text = "Cease Fire!";
+        roundInfoText.GetComponent<Animator>().Play("Show");
+
+        while (countDown > 3)
         {
-            shieldManagers[i].ResetShield();
-            healthManagers[i].ResetHealth();
-            timer = 99;
+            countDown -= Time.deltaTime;
+            yield return null;
         }
+
+        shieldManagers[0].ResetShield();
+        shieldManagers[1].ResetShield();
+        healthManagers[0].ResetHealth();
+        healthManagers[1].ResetHealth();
+        timer = 99;
+        timerText.text = timer.ToString();
+        currentGameState = GameState.RoundStart;
+        roundInfoText.GetComponent<Animator>().Play("FadeOut");
+        roundInfoText.text = "Ready...";
+
+        while(countDown > 0)
+        {
+            countDown -= Time.deltaTime;
+            yield return null;
+        }
+
+        roundInfoText.text = "Shoot!";
+        currentGameState = GameState.Playing;
     }
 
-    private void GameWon(int player)
+    private IEnumerator GameWon(int player)
     {
+        float cooldown = 2f;
         currentGameState = GameState.GameOver;
         if (player == 1)
         {
-            print("Congrats Player 1, You Win!");
+            roundInfoText.text = "Duel Winner: Player 1!";
         }
         else if (player == 2)
         {
-            print("Congrats Player 2, You Win!");
+            roundInfoText.text = "Duel Winner: Player 2!";
+        }
+        roundInfoText.GetComponent<Animator>().Play("Show");
+
+        while(cooldown > 0)
+        {
+            cooldown -= Time.deltaTime;
+            yield return null;
         }
 
         gameOverPanel.SetActive(true);
@@ -188,14 +416,22 @@ public class GameManager : MonoBehaviour
 
     public void ResetGame()
     {
-        print("resetting...");
-        SceneManager.sceneLoaded -= StartGame;
-        SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
+        Debug.Log("resetting...");
+
+        SceneManager.sceneLoaded -= StartGameEvent;
+        SceneManager.UnloadSceneAsync("GameScene");
+        SceneManager.LoadScene("GameScene", LoadSceneMode.Additive);
+    }
+
+    public void LoadGame()
+    {
+        SceneManager.UnloadSceneAsync("MainMenuScene");
+        SceneManager.LoadScene("GameScene", LoadSceneMode.Additive);
     }
 
     public void CloseGame()
     {
-        print("closing...");
+        Debug.Log("closing...");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
