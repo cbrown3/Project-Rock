@@ -1,13 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class ShieldManager : MonoBehaviour
+public class ShieldManager : InputController
 {
-    public bool isPlayer1;
-    private InputManager iManager;
     private GridMovementController movementController;
 
     public Slider shieldHealthSlider;
@@ -29,34 +25,18 @@ public class ShieldManager : MonoBehaviour
     private bool inShieldStun;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        Scene preloadScene = SceneManager.GetSceneByName("PreloadingScene");
-
-        GameObject[] preloadGOs = preloadScene.GetRootGameObjects();
+        base.Awake();
 
         movementController = GetComponentInParent<GridMovementController>();
 
         if (isPlayer1)
         {
-            for (int i = 0; i < preloadGOs.Length; i++)
-            {
-                if (preloadGOs[i].name == "P1InputManager")
-                {
-                    iManager = preloadGOs[i].GetComponent<P1InputManager>();
-                }
-            }
             iManager.onP1Shield.AddListener(Shield);
         }
         else
         {
-            for (int i = 0; i < preloadGOs.Length; i++)
-            {
-                if (preloadGOs[i].name == "P2InputManager")
-                {
-                    iManager = preloadGOs[i].GetComponent<P2InputManager>();
-                }
-            }
             iManager.onP2Shield.AddListener(Shield);
         }
 

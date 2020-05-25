@@ -140,7 +140,12 @@ public class P1InputManager : InputManager
             else if (Input.GetAxisRaw("P1Super") > 0)
             {
                 StartCoroutine(ActionCooldown(0.1f));
-                onP1Ultimate.Invoke();
+                onP1Super.Invoke();
+            }
+            else if(Input.GetAxisRaw("P1Grab") > 0)
+            {
+                StartCoroutine(ActionCooldown(0.5f));
+                onP1Grab.Invoke();
             }
         }
     }

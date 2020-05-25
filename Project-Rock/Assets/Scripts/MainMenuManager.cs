@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour
 {
+    public GameObject mainMenuPanel;
     public GameObject tutorialPanel;
     public GameObject creditsPanel;
     public GameObject charSelectPanel;
@@ -19,7 +21,6 @@ public class MainMenuManager : MonoBehaviour
     
     private Selectable p1PreviousButton;
     private Selectable p2PreviousButton;
-    [SerializeField] private float scaleAmount = 1.4f;
     [SerializeField] private GameObject p1DefaultButton;
     [SerializeField] private GameObject p2DefaultButton;
     [SerializeField] private GameObject p1CurrentSelected;
@@ -87,7 +88,7 @@ public class MainMenuManager : MonoBehaviour
 
         if (p1SelectedAsButton != null && p1SelectedAsButton != p1PreviousButton)
         {
-            if(!p1SelectedAsButton.interactable)
+            if(!p1SelectedAsButton.interactable && p1SelectedAsButton.name != "FightButton")
             {
                 p1EventSystem.SetSelectedGameObject(p1PreviousButton.gameObject);
                 p1SelectedAsButton = p1PreviousButton;
@@ -108,7 +109,7 @@ public class MainMenuManager : MonoBehaviour
 
         if (p2SelectedAsButton != null && p2SelectedAsButton != p2PreviousButton)
         {
-            if (!p2SelectedAsButton.interactable)
+            if (!p2SelectedAsButton.interactable && p1SelectedAsButton.name != "FightButton")
             {
                 p2EventSystem.SetSelectedGameObject(p2PreviousButton.gameObject);
                 p2SelectedAsButton = p2PreviousButton;
@@ -207,6 +208,7 @@ public class MainMenuManager : MonoBehaviour
     {
         if(charSelectPanel.activeSelf)
         {
+            mainMenuPanel.SetActive(true);
             charSelectPanel.SetActive(false);
             EventSystem.current.SetSelectedGameObject(charSelectButtons[0].gameObject);
             isPlayer2Present = false;
@@ -214,6 +216,7 @@ public class MainMenuManager : MonoBehaviour
         else
         {
             charSelectPanel.SetActive(true);
+            mainMenuPanel.SetActive(false);
             EventSystem.current.SetSelectedGameObject(charSelectButtons[1].gameObject);
             isPlayer2Present = true;
         }

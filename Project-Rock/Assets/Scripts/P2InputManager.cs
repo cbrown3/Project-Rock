@@ -130,7 +130,12 @@ public class P2InputManager : InputManager
             else if (Input.GetAxisRaw("P2Super") > 0)
             {
                 StartCoroutine(ActionCooldown(0.1f));
-                onP2Ultimate.Invoke();
+                onP2Super.Invoke();
+            }
+            else if (Input.GetAxisRaw("P2Grab") > 0)
+            {
+                StartCoroutine(ActionCooldown(0.5f));
+                onP2Grab.Invoke();
             }
         }
     }

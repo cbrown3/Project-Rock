@@ -32,9 +32,9 @@ public class MCAbilityController : AbilityController
     private int spawnTileIndex = 0;
 
     // Start is called before the first frame update
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
 
         fireColumnPrefab = Resources.Load("Abilities/FireColumn") as GameObject;
 
@@ -156,6 +156,7 @@ public class MCAbilityController : AbilityController
             rockPillarCurrentCD = 0;
         }
     }
+
     public void ShootFireColumns()
     {
         if (fireColumnCurrentCD >= fireColumnCD)
