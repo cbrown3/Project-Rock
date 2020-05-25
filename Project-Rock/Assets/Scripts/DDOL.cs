@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DDOL : MonoBehaviour
 {
@@ -8,5 +7,10 @@ public class DDOL : MonoBehaviour
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
+
+        if(SceneManager.sceneCount == 1)
+        {
+            SceneManager.LoadScene(1, LoadSceneMode.Additive);
+        }
     }
 }

@@ -111,10 +111,10 @@ MonoBehaviour:
     y: 30
     width: 1920
     height: 947
-  m_MinSize: {x: 683, y: 494}
+  m_MinSize: {x: 681, y: 494}
   m_MaxSize: {x: 14004, y: 14044}
   vertical: 0
-  controlID: 133
+  controlID: 70
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -136,10 +136,10 @@ MonoBehaviour:
     y: 0
     width: 1365
     height: 947
-  m_MinSize: {x: 406, y: 494}
+  m_MinSize: {x: 404, y: 494}
   m_MaxSize: {x: 10002, y: 14044}
   vertical: 1
-  controlID: 57
+  controlID: 116
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -161,10 +161,10 @@ MonoBehaviour:
     y: 0
     width: 1365
     height: 481
-  m_MinSize: {x: 406, y: 222}
-  m_MaxSize: {x: 8006, y: 4022}
+  m_MinSize: {x: 404, y: 222}
+  m_MaxSize: {x: 8004, y: 4022}
   vertical: 0
-  controlID: 58
+  controlID: 117
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -385,9 +385,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 525f0000
+      m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 9ef8ffff2a3b0000
+      m_ExpandedIDs: 24dfffff7ae0ffff58e2ffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -447,9 +447,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 0.12677175, y: -0.062446833, z: 56.865112}
+    m_Target: {x: -0.5002517, y: -0.21608129, z: 60.512257}
     speed: 2
-    m_Value: {x: 0.12677175, y: -0.062446833, z: 56.865112}
+    m_Value: {x: -0.5002517, y: -0.21608129, z: 60.512257}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -482,9 +482,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 12.220192
+    m_Target: 13.804646
     speed: 2
-    m_Value: 12.220192
+    m_Value: 13.804646
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -605,20 +605,20 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts
+    - Assets/Scenes
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/Scenes
   m_LastFoldersGridSize: -1
-  m_LastProjectPath: C:\Users\Seabreeze\Documents\Unity Projects\Project-Rock\Project-Rock
+  m_LastProjectPath: C:\Users\CB\Documents\GitHub\Project-Rock\Project-Rock
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 17}
-    m_SelectedIDs: 18340000
-    m_LastClickedID: 13336
-    m_ExpandedIDs: 00000000082e0000082f0000be2f0000863000001231000018340000c0340000d434000000ca9a3b
+    m_SelectedIDs: a24a0000
+    m_LastClickedID: 19106
+    m_ExpandedIDs: 000000008247000024480000944800000c49000066490000fa4b0000064c000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -646,7 +646,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000082e0000082f0000be2f00008630000012310000c0340000d4340000
+    m_ExpandedIDs: 000000008247000024480000944800000c49000066490000fa4b0000064c0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -756,7 +756,7 @@ MonoBehaviour:
   m_ViewDataDictionary: {fileID: 0}
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: 15206
+  m_LastSelectedObjectID: 19654
 --- !u!114 &20
 MonoBehaviour:
   m_ObjectHideFlags: 52
