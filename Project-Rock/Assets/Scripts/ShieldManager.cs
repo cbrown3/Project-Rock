@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Boo.Lang;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -106,6 +107,7 @@ public class ShieldManager : InputController
         {
             parryParticles.Play();
             print("parry!");
+            StartCoroutine(FreezeFrames(1));
         }
         else
         {
@@ -148,6 +150,14 @@ public class ShieldManager : InputController
         {
             Shield(false);
         }
+    }
+
+    public IEnumerator FreezeFrames(int frames)
+    {
+        float framesToSeconds = 0.01666667f * frames;
+        Time.timeScale = 0;
+        yield return new WaitForSeconds(framesToSeconds);
+        Time.timeScale = 1;
     }
 
     public void ResetShield()

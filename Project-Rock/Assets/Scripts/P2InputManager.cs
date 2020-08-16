@@ -142,13 +142,25 @@ public class P2InputManager : InputManager
     
     private void CheckP2Shield()
     {
-        if (Input.GetAxisRaw("P2Shield") > 0)
+        if (!onCooldown)
         {
-            onP2Shield.Invoke(true);
-        }
-        else if (Input.GetAxisRaw("P2Shield") == 0)
-        {
-            onP2Shield.Invoke(false);
+            if (Input.GetAxisRaw("P2Shield") > 0)
+            {
+                if (Input.GetAxisRaw("P2Grab") > 0)
+                {
+                    StartCoroutine(ActionCooldown(0.5f));
+                    onP2Shield.Invoke(false);
+                    onP2Grab.Invoke();
+                }
+                else
+                {
+                    onP2Shield.Invoke(true);
+                }
+            }
+            else if (Input.GetAxisRaw("P2Shield") == 0)
+            {
+                onP2Shield.Invoke(false);
+            }
         }
     }
     

@@ -18,6 +18,9 @@ TagManager:
   - P2FireColumn
   - P1IcicleShard
   - P2IcicleShard
+  - FxTemporaire
+  - P1RockBlast
+  - P2RockBlast
   layers:
   - Default
   - TransparentFX

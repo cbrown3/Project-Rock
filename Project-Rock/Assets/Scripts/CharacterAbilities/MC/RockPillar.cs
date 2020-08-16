@@ -6,6 +6,7 @@ public class RockPillar : MonoBehaviour
 {
     public bool IsPlayer1 { get; set; }
 
+    public float meterGain = 2;
     public float pillarMaxHealth;
     private float currentPillarHealth;
 
@@ -37,24 +38,28 @@ public class RockPillar : MonoBehaviour
             case true:
                 if(collision.tag == "P2BasicShot")
                 {
+                    GameManager.Instance.superMeter[0].value += meterGain;
                     TakeDamage(collision.GetComponent<BasicShot>().Damage);
                     Destroy(collision.gameObject);
                 }
 
                 if (collision.tag == "P2Icicle")
                 {
+                    GameManager.Instance.superMeter[0].value += meterGain;
                     TakeDamage(collision.GetComponent<Icicle>().Damage);
                     Destroy(collision.gameObject);
                 }
 
                 if (collision.tag == "P2IcicleShard")
                 {
+                    GameManager.Instance.superMeter[0].value += meterGain;
                     TakeDamage(collision.GetComponent<IcicleShard>().Damage);
                     Destroy(collision.gameObject);
                 }
 
                 if (collision.tag == "P2FireColumn")
                 {
+                    GameManager.Instance.superMeter[0].value += meterGain;
                     TakeDamage(collision.GetComponent<FireColumn>().Damage);
                     Destroy(collision.gameObject);
                 }
@@ -64,24 +69,28 @@ public class RockPillar : MonoBehaviour
 
                 if (collision.tag == "P1BasicShot")
                 {
+                    GameManager.Instance.superMeter[1].value += meterGain;
                     TakeDamage(collision.GetComponent<BasicShot>().Damage);
                     Destroy(collision.gameObject);
                 }
 
                 if (collision.tag == "P1Icicle")
                 {
+                    GameManager.Instance.superMeter[1].value += meterGain;
                     TakeDamage(collision.GetComponent<Icicle>().Damage);
                     Destroy(collision.gameObject);
                 }
 
                 if (collision.tag == "P1IcicleShard")
                 {
+                    GameManager.Instance.superMeter[1].value += meterGain;
                     TakeDamage(collision.GetComponent<IcicleShard>().Damage);
                     Destroy(collision.gameObject);
                 }
 
                 if (collision.tag == "P1FireColumn")
                 {
+                    GameManager.Instance.superMeter[1].value += meterGain;
                     TakeDamage(collision.GetComponent<FireColumn>().Damage);
                     Destroy(collision.gameObject);
                 }

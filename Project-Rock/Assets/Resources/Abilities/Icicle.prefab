@@ -163,3 +163,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   icicleShardDamage: 8
+  meterGain: 3

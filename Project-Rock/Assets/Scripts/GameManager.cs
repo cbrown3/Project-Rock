@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private ShieldManager[] shieldManagers;
 
+    public Slider[] superMeter;
+
     //[System.NonSerialized]
     public int[] comboCounter;
     
@@ -76,6 +78,8 @@ public class GameManager : MonoBehaviour
 
         comboCounter = new int[2] { 0, 0 };
 
+        superMeter = new Slider[2];
+
         currentGameState = GameState.Default;
 
         SceneManager.sceneLoaded += StartGameEvent;
@@ -113,7 +117,7 @@ public class GameManager : MonoBehaviour
 
         GameObject[] gameObjects = gameScene.GetRootGameObjects();
 
-        while(objectsLoaded < 19)
+        while(objectsLoaded < 21)
         {
             //objectsLoaded = 0;
 
@@ -202,6 +206,20 @@ public class GameManager : MonoBehaviour
                         if (transform.name == "P1ComboCounter")
                         {
                             comboCounterText[1] = transform.GetComponent<TextMeshProUGUI>();
+                            objectsLoaded++;
+                            continue;
+                        }
+
+                        if (transform.name == "P1SuperMeter")
+                        {
+                            superMeter[0] = transform.GetComponent<Slider>();
+                            objectsLoaded++;
+                            continue;
+                        }
+
+                        if (transform.name == "P2SuperMeter")
+                        {
+                            superMeter[1] = transform.GetComponent<Slider>();
                             objectsLoaded++;
                             continue;
                         }

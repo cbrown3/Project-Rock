@@ -9720,6 +9720,7 @@ GameObject:
   - component: {fileID: 1565390889}
   - component: {fileID: 1565390891}
   - component: {fileID: 1565390893}
+  - component: {fileID: 1565390894}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Player1
@@ -9885,6 +9886,7 @@ MonoBehaviour:
   icicleDamage: 15
   rockPillarAbilitySlider: {fileID: 488630957}
   rockPillarCD: 20
+  currentPillars: []
 --- !u!95 &1565390892
 Animator:
   serializedVersion: 3
@@ -9914,6 +9916,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7982763f3b473324799ce925dc97a821, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlayer1: 1
+  damage: 0
+--- !u!114 &1565390894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565390884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70b3591ff51ba8847b6e72022e13bc07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayer1: 1
@@ -10340,6 +10356,7 @@ GameObject:
   - component: {fileID: 1715332050}
   - component: {fileID: 1715332049}
   - component: {fileID: 1715332057}
+  - component: {fileID: 1715332058}
   m_Layer: 0
   m_Name: Player2
   m_TagString: Player2
@@ -10368,6 +10385,7 @@ MonoBehaviour:
   icicleDamage: 15
   rockPillarAbilitySlider: {fileID: 1743393532}
   rockPillarCD: 20
+  currentPillars: []
 --- !u!61 &1715332050
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -10534,6 +10552,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7982763f3b473324799ce925dc97a821, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlayer1: 0
+  damage: 0
+--- !u!114 &1715332058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1715332048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70b3591ff51ba8847b6e72022e13bc07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayer1: 0
@@ -11676,9 +11708,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 1
   m_MinValue: 0
-  m_MaxValue: 1
+  m_MaxValue: 100
   m_WholeNumbers: 0
-  m_Value: 0.599
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -12096,9 +12128,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 1
+  m_MaxValue: 100
   m_WholeNumbers: 0
-  m_Value: 0.155
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

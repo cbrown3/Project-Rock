@@ -13,6 +13,8 @@ public class FireColumn : MonoBehaviour
 
     public float shieldStun = 0.025f;
 
+    public float meterGain = 0.2f;
+
     private bool onDamageCooldown = false;
 
     private float lifetime = 5f;
@@ -50,6 +52,7 @@ public class FireColumn : MonoBehaviour
             case true:
                 if (!onDamageCooldown && collision.tag == "Player2")
                 {
+                    GameManager.Instance.superMeter[0].value += meterGain;
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
                     collision.GetComponent<GridMovementController>().ActivateHitStun(hitStun);
                     StartCoroutine(DamageCooldown(0.2f));
@@ -64,6 +67,7 @@ public class FireColumn : MonoBehaviour
             case false:
                 if (!onDamageCooldown && collision.tag == "Player1")
                 {
+                    GameManager.Instance.superMeter[1].value += meterGain;
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
                     collision.GetComponent<GridMovementController>().ActivateHitStun(hitStun);
                     StartCoroutine(DamageCooldown(0.75f));

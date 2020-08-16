@@ -24,6 +24,8 @@ public class MCAbilityController : AbilityController
     public Slider rockPillarAbilitySlider;
     public float rockPillarCD;
 
+    public List<GameObject> currentPillars;
+
     private float rockPillarCurrentCD;
     private GameObject rockPillarPrefab;
     private RockPillar rockPillarInstance;
@@ -154,6 +156,8 @@ public class MCAbilityController : AbilityController
             }
 
             rockPillarCurrentCD = 0;
+
+            currentPillars.Add(rockPillarInstance.gameObject);
         }
     }
 

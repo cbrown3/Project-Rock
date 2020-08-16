@@ -94,6 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 387a73f296c25f3449b74606a98aa687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meterGain: 5
   pillarMaxHealth: 50
 --- !u!61 &6516630005478999705
 BoxCollider2D:

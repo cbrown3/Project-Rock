@@ -10,6 +10,8 @@ public class Icicle : MonoBehaviour
 
     public int icicleShardDamage;
 
+    public float meterGain = 5f;
+
     private Animator anim;
     private GameObject icicleShardPrefab;
     private IcicleShard[] icicleShardInstance;
@@ -52,6 +54,7 @@ public class Icicle : MonoBehaviour
             case true:
                 if(collision.tag == "Player2")
                 {
+                    GameManager.Instance.superMeter[0].value += meterGain;
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
                     Destroy(GetComponent<Rigidbody2D>());
                     Destroy(GetComponent<SpriteRenderer>());
@@ -73,6 +76,7 @@ public class Icicle : MonoBehaviour
             case false:
                 if (collision.tag == "Player1")
                 {
+                    GameManager.Instance.superMeter[1].value += meterGain;
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
                     Destroy(GetComponent<Rigidbody2D>());
                     Destroy(GetComponent<SpriteRenderer>());

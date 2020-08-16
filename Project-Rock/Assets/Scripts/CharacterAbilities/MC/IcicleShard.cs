@@ -10,6 +10,8 @@ public class IcicleShard : MonoBehaviour
 
     public int Damage { get; set; }
 
+    public float meterGain = 5f;
+
     private Rigidbody2D rigid;
     private float lifetimeTimer = 5f;
 
@@ -76,6 +78,7 @@ public class IcicleShard : MonoBehaviour
             case true:
                 if (collision.tag == "Player2")
                 {
+                    GameManager.Instance.superMeter[0].value += meterGain;
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
                     Destroy(GetComponent<Rigidbody2D>());
                     Destroy(GetComponent<SpriteRenderer>());
@@ -98,6 +101,7 @@ public class IcicleShard : MonoBehaviour
             case false:
                 if (collision.tag == "Player1")
                 {
+                    GameManager.Instance.superMeter[1].value += meterGain;
                     collision.GetComponent<HealthManager>().TakeDamage(Damage);
                     Destroy(GetComponent<Rigidbody2D>());
                     Destroy(GetComponent<SpriteRenderer>());

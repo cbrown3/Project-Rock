@@ -60,18 +60,6 @@ public class P1InputManager : InputManager
                 }
             }
         }
-        else
-        {
-            CheckP1UIInputs();
-        }
-    }
-
-    private void CheckP1UIInputs()
-    {
-        if(Input.GetAxisRaw("P1Horizontal") > 0)
-        {
-
-        }
     }
 
     private void CheckP1Movement()
@@ -152,15 +140,26 @@ public class P1InputManager : InputManager
 
     private void CheckP1Shield()
     {
-        if (Input.GetAxisRaw("P1Shield") > 0)
+        if (!onCooldown)
         {
-            onP1Shield.Invoke(true);
+            if (Input.GetAxisRaw("P1Shield") > 0)
+            {
+                if (Input.GetAxisRaw("P1BasicShot") > 0)
+                {
+                    StartCoroutine(ActionCooldown(0.5f));
+                    onP1Shield.Invoke(false);
+                    onP1Grab.Invoke();
+                }
+                else
+                {
+                    onP1Shield.Invoke(true);
+                }
+            }
+            else if (Input.GetAxisRaw("P1Shield") == 0)
+            {
+                onP1Shield.Invoke(false);
+            }
         }
-        else if (Input.GetAxisRaw("P1Shield") == 0)
-        {
-            onP1Shield.Invoke(false);
-        }
-
     }
 
     private IEnumerator ActionCooldown(float cooldown)

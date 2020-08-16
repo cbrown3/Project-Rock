@@ -37,7 +37,7 @@ public class GrabController : InputController
         if (isPlayer1)
         {
             StartCoroutine(p1Movement.Immobilize(grabLength));
-            //animator.Play("Grab");
+            animator.Play("Grab");
 
             if (p2Movement.currentTile.GetTileIndex() == p1Movement.currentTile.GetTileIndex() + 4)
             {
@@ -52,7 +52,7 @@ public class GrabController : InputController
         else
         {
             StartCoroutine(p2Movement.Immobilize(grabLength));
-            //animator.Play("Grab");
+            animator.Play("Grab");
 
             if (p1Movement.currentTile.GetTileIndex() == p2Movement.currentTile.GetTileIndex() - 4)
             {
