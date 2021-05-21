@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Photon.Pun;
+using UnityEngine;
 using UnityEngine.Events;
 
 [System.Serializable]
@@ -35,7 +36,7 @@ public class OnP2Shield : UnityEvent<bool> { }
 [System.Serializable]
 public class OnP2Grab : UnityEvent { }
 
-public class InputManager : MonoBehaviour
+public class InputManager : MonoBehaviourPun
 {
     public OnP1Movement onP1Movement;
     public OnP1BasicShot onP1BasicShot;

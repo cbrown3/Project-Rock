@@ -3,8 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
     private TextMeshProUGUI[] playersUsername;
     private TextMeshProUGUI[] playersCharName;
@@ -49,8 +50,8 @@ public class GameManager : MonoBehaviour
     public enum GameMode
     {
         None = 0,
-        VS = 1,
-        Practice = 2
+        Local = 1,
+        Online = 2
     }
     
     public GameMode currentGameMode = GameMode.None;
@@ -98,10 +99,10 @@ public class GameManager : MonoBehaviour
                 currentGameMode = GameMode.None;
                 break;
             case 1:
-                currentGameMode = GameMode.VS;
+                currentGameMode = GameMode.Local;
                 break;
             case 2:
-                currentGameMode = GameMode.Practice;
+                currentGameMode = GameMode.Online;
                 break;
             default:
                 currentGameMode = GameMode.None;
@@ -247,10 +248,18 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
-        if (currentGameMode == GameMode.VS)
+        if (currentGameMode == GameMode.Local)
         {
-            playersUsername[0].text = "";
-            playersUsername[1].text = "";
+            playersUsername[0].text = "Player 1";
+            playersUsername[1].text = "Player 2";
+        }
+        else if(currentGameMode == GameMode.Online)
+        {
+            Photon.Realtime.Player[] players = PhotonNetwork.PlayerList;
+
+            //use ismaster to define left or right, local player not always left
+            playersUsername[0].text = PhotonNetwork.LocalPlayer.NickName == players[0].NickName ? players[0].NickName : players[1].NickName;
+            playersUsername[1].text = playersUsername[0].text == players[1].NickName ? players[0].NickName : players[1].NickName;
         }
 
         playersCharName[0].text = "Char " + charSelected[0].ToString();
@@ -438,13 +447,13 @@ public class GameManager : MonoBehaviour
 
         SceneManager.sceneLoaded -= StartGameEvent;
         SceneManager.UnloadSceneAsync("GameScene");
-        SceneManager.LoadScene("GameScene", LoadSceneMode.Additive);
+        PhotonNetwork.LoadLevel("GameScene", LoadSceneMode.Additive);
     }
 
     public void LoadGame()
     {
         SceneManager.UnloadSceneAsync("MainMenuScene");
-        SceneManager.LoadScene("GameScene", LoadSceneMode.Additive);
+        PhotonNetwork.LoadLevel("GameScene", LoadSceneMode.Additive);
     }
 
     public void CloseGame()

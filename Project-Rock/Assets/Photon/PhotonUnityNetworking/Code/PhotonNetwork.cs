@@ -3015,6 +3015,51 @@ namespace Photon.Pun
             _AsyncLevelLoadingOperation = SceneManager.LoadSceneAsync(levelName, LoadSceneMode.Single);
         }
 
+        /// <summary>This method wraps loading a level asynchronously and pausing network messages during the process.</summary>
+        /// <remarks>
+        /// While loading levels in a networked game, it makes sense to not dispatch messages received by other players.
+        /// LoadLevel takes care of that by setting PhotonNetwork.IsMessageQueueRunning = false until the scene loaded.
+        ///
+        /// To sync the loaded level in a room, set PhotonNetwork.AutomaticallySyncScene to true.
+        /// The Master Client of a room will then sync the loaded level with every other player in the room.
+        /// Note that this works only for a single active scene and that reloading the scene is not supported.
+        /// The Master Client will actually reload a scene but other clients won't.
+        ///
+        /// You should make sure you don't fire RPCs before you load another scene (which doesn't contain
+        /// the same GameObjects and PhotonViews).
+        ///
+        /// LoadLevel uses SceneManager.LoadSceneAsync().
+        ///
+        /// Check the progress of the LevelLoading using PhotonNetwork.LevelLoadingProgress.
+        ///
+        /// Calling LoadLevel before the previous scene finished loading is not recommended.
+        /// If AutomaticallySyncScene is enabled, PUN cancels the previous load (and prevent that from
+        /// becoming the active scene). If AutomaticallySyncScene is off, the previous scene loading can finish.
+        /// In both cases, a new scene is loaded locally.
+        /// </remarks>
+        /// <param name='levelName'>
+        /// Name of the level to load. Make sure it's available to all clients in the same room.
+        /// </param>
+        /// <param name='loadMode'>
+        /// LoadSceneMode setting. Set whether you want to load the scene single or additively
+        /// </param>
+        public static void LoadLevel(string levelName, LoadSceneMode loadMode)
+        {
+            if (PhotonHandler.AppQuits)
+            {
+                return;
+            }
+
+            if (PhotonNetwork.AutomaticallySyncScene)
+            {
+                SetLevelInPropsIfSynced(levelName);
+            }
+
+            PhotonNetwork.IsMessageQueueRunning = false;
+            loadingLevelAndPausedNetwork = true;
+            _AsyncLevelLoadingOperation = SceneManager.LoadSceneAsync(levelName, loadMode);
+        }
+
         /// <summary>
         /// This operation makes Photon call your custom web-service by name (path) with the given parameters.
         /// </summary>

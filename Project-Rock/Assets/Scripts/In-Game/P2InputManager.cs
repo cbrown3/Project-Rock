@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -45,19 +46,26 @@ public class P2InputManager : InputManager
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetSceneByName("GameScene").isLoaded)
+        if (!photonView.IsMine && PhotonNetwork.IsConnected)
         {
-            if (!gmController.inHitStun)
+            return;
+        }
+        else
+        {
+            if (SceneManager.GetSceneByName("GameScene").isLoaded)
             {
-                CheckP2Shield();
-
-                if (!onCooldown)
+                if (!gmController.inHitStun)
                 {
-                    CheckP2Movement();
-                    if (GameManager.Instance.currentGameState == GameManager.GameState.Playing ||
-                        GameManager.Instance.currentGameState == GameManager.GameState.RoundEnd)
+                    CheckP2Shield();
+
+                    if (!onCooldown)
                     {
-                        CheckP2Attacks();
+                        CheckP2Movement();
+                        if (GameManager.Instance.currentGameState == GameManager.GameState.Playing ||
+                            GameManager.Instance.currentGameState == GameManager.GameState.RoundEnd)
+                        {
+                            CheckP2Attacks();
+                        }
                     }
                 }
             }
